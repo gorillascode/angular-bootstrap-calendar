@@ -482,6 +482,13 @@ module.exports = startOfDay
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SECONDS_IN_DAY", function() { return SECONDS_IN_DAY; });
+/* harmony export (immutable) */ __webpack_exports__["getWeekViewEventOffset"] = getWeekViewEventOffset;
+/* harmony export (immutable) */ __webpack_exports__["getWeekViewHeader"] = getWeekViewHeader;
+/* harmony export (immutable) */ __webpack_exports__["getWeekView"] = getWeekView;
+/* harmony export (immutable) */ __webpack_exports__["getMonthView"] = getMonthView;
+/* harmony export (immutable) */ __webpack_exports__["getDayView"] = getDayView;
+/* harmony export (immutable) */ __webpack_exports__["getDayViewHourGrid"] = getDayViewHourGrid;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_date_fns_end_of_day__ = __webpack_require__(19);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_date_fns_end_of_day___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_date_fns_end_of_day__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_date_fns_add_minutes__ = __webpack_require__(12);
@@ -526,13 +533,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_20_date_fns_min___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_20_date_fns_min__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_21_date_fns_max__ = __webpack_require__(27);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_21_date_fns_max___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_21_date_fns_max__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SECONDS_IN_DAY", function() { return SECONDS_IN_DAY; });
-/* harmony export (immutable) */ __webpack_exports__["getWeekViewEventOffset"] = getWeekViewEventOffset;
-/* harmony export (immutable) */ __webpack_exports__["getWeekViewHeader"] = getWeekViewHeader;
-/* harmony export (immutable) */ __webpack_exports__["getWeekView"] = getWeekView;
-/* harmony export (immutable) */ __webpack_exports__["getMonthView"] = getMonthView;
-/* harmony export (immutable) */ __webpack_exports__["getDayView"] = getDayView;
-/* harmony export (immutable) */ __webpack_exports__["getDayViewHourGrid"] = getDayViewHourGrid;
 
 
 
@@ -2333,18 +2333,19 @@ angular
     };
 
     vm.onDragSelectStart = function(date, dayIndex) {
-      if (!vm.dateRangeSelect) {
-        vm.dateRangeSelect = {
-          active: true,
-          startDate: date,
-          endDate: date,
-          dayIndex: dayIndex
-        };
-      }
+      delete vm.dateRangeSelect;
+      vm.dateRangeSelecting = true;
+
+      vm.dateRangeSelect = {
+        active: true,
+        startDate: date,
+        endDate: date,
+        dayIndex: dayIndex
+      };
     };
 
     vm.onDragSelectMove = function(date) {
-      if (vm.dateRangeSelect) {
+      if (vm.dateRangeSelecting) {
         vm.dateRangeSelect.endDate = date;
       }
     };
@@ -2358,8 +2359,9 @@ angular
             calendarRangeEndDate: vm.dateRangeSelect.endDate.toDate()
           });
         }
-        delete vm.dateRangeSelect;
       }
+
+      vm.dateRangeSelecting = false;
     };
 
   }])
@@ -2514,16 +2516,17 @@ angular
     };
 
     vm.onDragSelectStart = function(day) {
-      if (!vm.dateRangeSelect) {
-        vm.dateRangeSelect = {
-          startDate: day.date,
-          endDate: day.date
-        };
-      }
+      delete vm.dateRangeSelect;
+      vm.dateRangeSelecting = true;
+
+      vm.dateRangeSelect = {
+        startDate: day.date,
+        endDate: day.date
+      };
     };
 
     vm.onDragSelectMove = function(day) {
-      if (vm.dateRangeSelect) {
+      if (vm.dateRangeSelecting) {
         vm.dateRangeSelect.endDate = day.date;
       }
     };
@@ -2537,8 +2540,9 @@ angular
             calendarRangeEndDate: vm.dateRangeSelect.endDate.clone().endOf('day').toDate()
           });
         }
-        delete vm.dateRangeSelect;
       }
+
+      vm.dateRangeSelecting = false;
     };
 
     vm.$onInit = function() {
@@ -3738,11 +3742,11 @@ angular
   .factory('calendarEventTitle', ["calendarDateFilter", "calendarTruncateEventTitleFilter", function(calendarDateFilter, calendarTruncateEventTitleFilter) {
 
     function yearView(event) {
-      return event.title + ' (' + calendarDateFilter(event.startsAt, 'datetime', true) + ')';
+      return event.title;
     }
 
     function monthView(event) {
-      return event.title + ' (' + calendarDateFilter(event.startsAt, 'time', true) + ')';
+      return event.title;
     }
 
     function monthViewTooltip(event) {

@@ -118,16 +118,17 @@ angular
     };
 
     vm.onDragSelectStart = function(day) {
-      if (!vm.dateRangeSelect) {
-        vm.dateRangeSelect = {
-          startDate: day.date,
-          endDate: day.date
-        };
-      }
+      delete vm.dateRangeSelect;
+      vm.dateRangeSelecting = true;
+
+      vm.dateRangeSelect = {
+        startDate: day.date,
+        endDate: day.date
+      };
     };
 
     vm.onDragSelectMove = function(day) {
-      if (vm.dateRangeSelect) {
+      if (vm.dateRangeSelecting) {
         vm.dateRangeSelect.endDate = day.date;
       }
     };
@@ -141,8 +142,9 @@ angular
             calendarRangeEndDate: vm.dateRangeSelect.endDate.clone().endOf('day').toDate()
           });
         }
-        delete vm.dateRangeSelect;
       }
+
+      vm.dateRangeSelecting = false;
     };
 
     vm.$onInit = function() {

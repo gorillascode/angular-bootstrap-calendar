@@ -7,11 +7,11 @@ angular
   .factory('calendarEventTitle', function(calendarDateFilter, calendarTruncateEventTitleFilter) {
 
     function yearView(event) {
-      return event.title + ' (' + calendarDateFilter(event.startsAt, 'datetime', true) + ')';
+      return event.title;
     }
 
     function monthView(event) {
-      return event.title + ' (' + calendarDateFilter(event.startsAt, 'time', true) + ')';
+      return event.title;
     }
 
     function monthViewTooltip(event) {
